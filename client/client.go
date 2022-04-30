@@ -3,10 +3,10 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
@@ -103,11 +103,18 @@ func (c *Client) do(req *http.Request) (*http.Response, error) {
 	}
 
 	if res.StatusCode < 200 || res.StatusCode >= 400 {
-		body, err := io.ReadAll(res.Body)
-		if err != nil {
+		details := make(map[string]interface{})
+
+		if decodeErr := json.NewDecoder(res.Body).Decode(&details); decodeErr != nil {
+			err = errors.Wrap(decodeErr, "error decoding response for HTTP error code: "+strconv.Itoa(res.StatusCode))
 			return nil, err
 		}
-		err = errors.Wrapf(err, "failed to do request: status %d, %s", res.StatusCode, string(body))
+
+		err = &RapidproRestError{
+			Status:  res.StatusCode,
+			Details: details,
+		}
+
 		return nil, err
 	}
 	return res, nil

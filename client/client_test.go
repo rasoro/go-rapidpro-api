@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	rapidpro "github.com/rasoro/rapidpro-api-go/client"
+	"github.com/stretchr/testify/assert"
 )
 
 var mockServer *httptest.Server
@@ -27,4 +28,18 @@ func TestMain(m *testing.M) {
 	defer mockServer.Close()
 	testClient = NewClient("token123")
 	os.Exit(m.Run())
+}
+
+func TestClient_SendRequestError(t *testing.T) {
+	errorServer := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(400)
+			_, _ = w.Write([]byte("{}"))
+		}))
+	defer errorServer.Close()
+
+	resp, err := testClient.SendRequest(http.MethodGet, errorServer.URL, nil, nil, nil)
+	rapidproErr := err.(*rapidpro.RapidproRestError)
+	assert.Nil(t, resp)
+	assert.Equal(t, 400, rapidproErr.Status)
 }

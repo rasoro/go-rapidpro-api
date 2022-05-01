@@ -1,7 +1,7 @@
 package rapidpro
 
 import (
-	"log"
+	"os"
 
 	"github.com/rasoro/rapidpro-api-go/client"
 )
@@ -20,7 +20,20 @@ func NewRestClient() *RestClient {
 }
 
 func NewRestClientWithParams(params ClientParams) *RestClient {
-	// TODO: implement
-	log.Fatal("Not implemented")
-	return nil
+	requestHandler := client.NewRequestHandler(params.Client)
+
+	if params.Client == nil {
+		token := params.Token
+		if token == "" {
+			token = os.Getenv("RAPIDPRO_API_GO_TOKEN")
+		}
+		defaultClient := &client.Client{
+			Credentials: &client.Credentials{Token: token},
+		}
+		requestHandler = client.NewRequestHandler(defaultClient)
+	}
+	c := &RestClient{
+		RequestHandler: requestHandler,
+	}
+	return c
 }

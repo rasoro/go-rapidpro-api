@@ -35,6 +35,14 @@ func defaultHTTPClient() *http.Client {
 	}
 }
 
+func (c *Client) Token() string {
+	return c.Credentials.Token
+}
+
+func (c *Client) SetToken(token string) {
+	c.Credentials = NewCredentials(token)
+}
+
 func (c *Client) SetTimeout(timeout time.Duration) {
 	if c.HTTPClient == nil {
 		c.HTTPClient = defaultHTTPClient()

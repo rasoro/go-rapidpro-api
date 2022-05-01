@@ -15,4 +15,5 @@ type BaseClient interface {
 		body interface{},
 		headers map[string]interface{},
 	) (*http.Response, error)
+	Token() string
 }

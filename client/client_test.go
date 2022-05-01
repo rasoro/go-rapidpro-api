@@ -216,3 +216,8 @@ func TestClient_SendRequestWithRedirect(t *testing.T) {
 	resp, _ := c.SendRequest(http.MethodGet, redirectServer.URL, nil, nil, nil)
 	assert.Equal(t, 303, resp.StatusCode)
 }
+
+func TestClient_SendRequestWithInvalidMethod(t *testing.T) {
+	_, err := testClient.SendRequest("bad method", mockServer.URL, nil, nil, nil)
+	assert.Error(t, err)
+}

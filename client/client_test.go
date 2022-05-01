@@ -216,3 +216,9 @@ func TestClient_SendRequestWithRedirect(t *testing.T) {
 	resp, _ := c.SendRequest(http.MethodGet, redirectServer.URL, nil, nil, nil)
 	assert.Equal(t, 303, resp.StatusCode)
 }
+
+func TestClient_SetToken(t *testing.T) {
+	c := &rapidpro.Client{}
+	c.SetToken("tk123")
+	assert.Equal(t, c.Token(), "tk123")
+}

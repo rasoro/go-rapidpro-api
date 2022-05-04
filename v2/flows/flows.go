@@ -22,6 +22,7 @@ func NewService(requestHandler *rapidpro.RequestHandler, apiURL string) *ApiServ
 	}
 }
 
+// Get makes a GET request to flows endpoint with *QueryParams and returns a Response
 func (s *ApiService) Get(params *QueryParams) (*Response, error) {
 	data := url.Values{}
 	headers := make(map[string]interface{})
@@ -52,6 +53,7 @@ func (s *ApiService) Get(params *QueryParams) (*Response, error) {
 	return flowResponse, err
 }
 
+// Flow is a struct that represents a flow object
 type Flow struct {
 	UUID     string        `json:"uuid"`
 	Name     string        `json:"name"`
@@ -76,12 +78,14 @@ type Flow struct {
 	ModifiedOn time.Time     `json:"modified_on"`
 }
 
+// Response is a struct that represents the response of a request in flows endpoint
 type Response struct {
 	Next     interface{} `json:"next"`
 	Previous interface{} `json:"previous"`
 	Results  []Flow      `json:"results"`
 }
 
+// QueryParams is a struct that represents the query parameters that can be passed in a request to flows endpoint
 type QueryParams struct {
 	UUID   string     `json:"uuid"`
 	After  *time.Time `json:"after"`

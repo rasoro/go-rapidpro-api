@@ -8,7 +8,7 @@ import (
 	rapidpro "github.com/rasoro/rapidpro-api-go/client"
 )
 
-const SOURCE_PATH = "/v2/flows.json"
+const PATH = "/v2/flows.json"
 
 type ApiService struct {
 	serviceURL     string
@@ -18,7 +18,7 @@ type ApiService struct {
 func NewService(requestHandler *rapidpro.RequestHandler, apiURL string) *ApiService {
 	return &ApiService{
 		requestHandler: requestHandler,
-		serviceURL:     apiURL + SOURCE_PATH,
+		serviceURL:     apiURL + PATH,
 	}
 }
 

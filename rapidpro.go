@@ -5,14 +5,16 @@ import (
 
 	"github.com/rasoro/rapidpro-api-go/client"
 	"github.com/rasoro/rapidpro-api-go/v2/flows"
+	"github.com/rasoro/rapidpro-api-go/v2/flowstarts"
 )
 
 const apiURL = "https://localhost:8000/api"
 
 type RestClient struct {
 	*client.RequestHandler
-	Flows   *flows.ApiService
-	baseURL string
+	Flows      *flows.ApiService
+	FlowStarts *flowstarts.ApiService
+	baseURL    string
 }
 
 type ClientParams struct {
@@ -43,5 +45,6 @@ func NewRestClientWithParams(params ClientParams) *RestClient {
 	}
 
 	c.Flows = flows.NewService(c.RequestHandler, params.ApiURL)
+	c.FlowStarts = flowstarts.NewService(c.RequestHandler, params.ApiURL)
 	return c
 }

@@ -28,7 +28,7 @@ func (s *ApiService) Get(params *QueryParams) (*Response, error) {
 
 	if params != nil {
 		if params.ID != "" {
-			data.Set("uuid", params.ID)
+			data.Set("id", params.ID)
 		}
 		if params.After != nil {
 			data.Set("after", params.After.Format(time.RFC3339))
@@ -52,9 +52,8 @@ func (s *ApiService) Get(params *QueryParams) (*Response, error) {
 }
 
 func (s *ApiService) Post(body PostBody) (*FlowStart, error) {
-	headers := make(map[string]interface{})
 	queryParams := url.Values{}
-	resp, err := s.requestHandler.Post(s.URL, queryParams, body, headers)
+	resp, err := s.requestHandler.Post(s.URL, queryParams, body, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +98,7 @@ type Response struct {
 }
 
 type QueryParams struct {
-	ID     string     `json:"uuid,omitempty"`
+	ID     string     `json:"id,omitempty"`
 	After  *time.Time `json:"after,omitempty"`
 	Before *time.Time `json:"before,omitempty"`
 }

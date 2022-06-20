@@ -16,24 +16,24 @@ type ApiService struct {
 	requestHandler *rapidpro.RequestHandler
 }
 
-func NewSErvice(requestHandler *rapidpro.RequestHandler, apiURL string) *ApiService {
+func NewService(requestHandler *rapidpro.RequestHandler, apiURL string) *ApiService {
 	return &ApiService{
 		requestHandler: requestHandler,
 		serviceURL:     apiURL + PATH,
 	}
 }
 
-// Get makes a GET request to messages endpoint with *QueryParams and returns a Response
+// Get makes a GET request to messages endpoint with *QueryParams and returns a Response.
 func (s *ApiService) Get(params *QueryParams) (*Response, error) {
 	data := url.Values{}
 	headers := make(map[string]interface{})
 
 	if params != nil {
 		if params.ID != 0 {
-			data.Set("id", strconv.FormatInt(params.ID, 10))
+			data.Set("id", strconv.Itoa(params.ID))
 		}
-		if params.Broadcast != "" {
-			data.Set("broadcast", params.Broadcast)
+		if params.Broadcast != 0 {
+			data.Set("broadcast", strconv.Itoa(params.Broadcast))
 		}
 		if params.Contact != "" {
 			data.Set("contact", params.Contact)
@@ -66,49 +66,51 @@ func (s *ApiService) Get(params *QueryParams) (*Response, error) {
 	return response, nil
 }
 
+// Message represents a message objects
 type Message struct {
-	ID        int64 `json:"id"`
-	Broadcast int   `json:"broadcast"`
+	ID        int `json:"id,omitempty"`
+	Broadcast int `json:"broadcast,omitempty"`
 	Contact   struct {
-		UUID string `json:"uuid"`
-		Name string `json:"name"`
-	} `json:"contact"`
-	Urn     string `json:"urn"`
+		UUID string `json:"uuid,omitempty"`
+		Name string `json:"name,omitempty"`
+	} `json:"contact,omitempty"`
+	Urn     string `json:"urn,omitempty"`
 	Channel struct {
-		UUID string `json:"uuid"`
-		Name string `json:"name"`
-	} `json:"channel"`
-	Direction   string `json:"direction"`
-	Type        string `json:"type"`
-	Status      string `json:"status"`
-	Visibility  string `json:"visibility"`
-	Text        string `json:"text"`
+		UUID string `json:"uuid,omitempty"`
+		Name string `json:"name,omitempty"`
+	} `json:"channel,omitempty"`
+	Direction   string `json:"direction,omitempty"`
+	Type        string `json:"type,omitempty"`
+	Status      string `json:"status,omitempty"`
+	Visibility  string `json:"visibility,omitempty"`
+	Text        string `json:"text,omitempty"`
 	Attachments []struct {
-		ContentType string `json:"content_type"`
-		URL         string `json:"url"`
-	} `json:"attachments"`
+		ContentType string `json:"content_type,omitempty"`
+		URL         string `json:"url,omitempty"`
+	} `json:"attachments,omitempty"`
 	Labels []struct {
-		Name string `json:"name"`
-		UUID string `json:"uuid"`
-	} `json:"labels"`
-	CreatedOn  time.Time `json:"created_on"`
-	SentOn     time.Time `json:"sent_on"`
-	ModifiedOn time.Time `json:"modified_on"`
+		Name string `json:"name,omitempty"`
+		UUID string `json:"uuid,omitempty"`
+	} `json:"labels,omitempty"`
+	CreatedOn  *time.Time `json:"created_on,omitempty"`
+	SentOn     *time.Time `json:"sent_on,omitempty"`
+	ModifiedOn *time.Time `json:"modified_on,omitempty"`
 }
 
+// Response represents the response of a request in messages endpoint
 type Response struct {
 	Next     interface{} `json:"next"`
 	Previous interface{} `json:"previous"`
-	Results  []Message   `json:"message"`
+	Results  []Message   `json:"results"`
 }
 
 // QueryParams is a struct that represents the query parameters that can be passed in a request to messages endpoint
 type QueryParams struct {
-	ID        int64      `json:"id"`
-	Broadcast string     `json:"broadcast"`
-	Contact   string     `json:"contact"`
-	Folder    string     `json:"folder"`
-	Label     string     `json:"label"`
-	Before    *time.Time `json:"before"`
-	After     *time.Time `json:"after"`
+	ID        int        `json:"id,omitempty"`
+	Broadcast int        `json:"broadcast,omitempty"`
+	Contact   string     `json:"contact,omitempty"`
+	Folder    string     `json:"folder,omitempty"`
+	Label     string     `json:"label,omitempty"`
+	Before    *time.Time `json:"before,omitempty"`
+	After     *time.Time `json:"after,omitempty"`
 }

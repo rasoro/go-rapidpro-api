@@ -62,8 +62,20 @@ func (s *ApiService) Get(params *QueryParams) (*Response, error) {
 	return response, nil
 }
 
-// Post to add a new contact to your workspace passing PostBody and return a *Contact for the new created contact.
-func (s *ApiService) Post(body PostBody, bodyPostBody string) (*Contact, error) {
+// Post to add a new contact to your workspace passing PostBody and return a *Contact for the new created contact. Or update
+// contact querying by URN or UUID
+func (s *ApiService) Post(body PostBody, params *QueryParams) (*Contact, error) {
+	data := url.Values{}
+
+	if params != nil {
+		if params.UUID != "" {
+			data.Set("uuid", params.UUID)
+		}
+		if params.URN != "" {
+			data.Set("urn", params.URN)
+		}
+	}
+
 	resp, err := s.requestHandler.Post(s.URL, url.Values{}, body, nil)
 	if err != nil {
 		return nil, err
@@ -81,9 +93,9 @@ func (s *ApiService) Post(body PostBody, bodyPostBody string) (*Contact, error) 
 type Contact struct {
 	UUID       string                 `json:"uuid,omitempty"`
 	Name       string                 `json:"name,omitempty"`
-	Language   interface{}            `json:"language,omitempty"`
-	Urns       []string               `json:"urns,omitempty"`
-	Groups     []interface{}          `json:"groups,omitempty"`
+	Language   string                 `json:"language,omitempty"`
+	URNs       []string               `json:"urns,omitempty"`
+	Groups     []map[string]string    `json:"groups,omitempty"`
 	Fields     map[string]interface{} `json:"fields,omitempty"`
 	Blocked    bool                   `json:"blocked,omitempty"`
 	Stopped    bool                   `json:"stopped,omitempty"`
@@ -113,7 +125,7 @@ type QueryParams struct {
 type PostBody struct {
 	Name     string                 `json:"name,omitempty"`
 	Language string                 `json:"language,omitempty"`
-	URNS     []string               `json:"urns,omitempty"`
+	URNs     []string               `json:"urns,omitempty"`
 	Groups   []string               `json:"groups,omitempty"`
 	Fields   map[string]interface{} `json:"fields,omitempty"`
 }
